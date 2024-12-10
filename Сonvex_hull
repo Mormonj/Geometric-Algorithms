@@ -1,0 +1,25 @@
+'''hartutyan mej mi qani keteric amenadzax gtnvox ketic sksac amen hajord kety avelkanum e enqan minchev shxtan pagvi.functian stanum e keteri cucaky inchpes kortej,apa voroshvum e te vor uxxutyamb en kargavorvelu ketery slaqi uxxutyam kam hakarak.'''
+def convex_hull(points):
+  # ereq keti uxxutyan voroshum (p, q, r)
+  def orientation(p, q, r):
+      val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
+      if val == 0:
+          return 0 
+      return 1 if val > 0 else -1  # 1 - jamaslaqi uxxutyamb, -1 - hakarak
+  #vercnum enq amneadzaxi kety
+  leftmost = min(points, key=lambda p: (p[0], p[1]))
+  hull = []
+  p = leftmost
+  while True:
+      hull.append(p)
+      q = points[0]
+      for r in points:
+          if q == p or orientation(p, q, r) == -1:
+              q = r
+      p = q
+      if p == leftmost:
+          break
+  return hull
+points = [(0, 3), (2, 2), (1, 1), (2, 1), (3, 0), (0, 0), (3, 3)]
+hull = convex_hull(points)
+print("", hull)
