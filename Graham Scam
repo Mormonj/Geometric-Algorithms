@@ -1,0 +1,55 @@
+import matplotlib.pyplot as plt
+from math import atan2
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __repr__(self):
+        return f"({self.x}, {self.y})"
+
+# 3 keteri uxxutyan u orientaciayi voroshum
+def orientation(p, q, r):
+    val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y)
+    if val == 0:
+        return 0  
+    elif val > 0:
+        return 1  #-->
+    else:
+        return 2  # <--
+
+
+def graham_scan(points):#sortirovka yst y apa yst x
+    points = sorted(points, key=lambda p: (p.y, p.x))
+    p0 = points[0]
+
+    # sortirovka yst ankyan p0 handep unencac
+    points = sorted(points[1:], key=lambda p: (atan2(p.y - p0.y, p.x - p0.x)))
+
+    hull = [p0]
+
+    for p in points:
+        while len(hull) > 1 and orientation(hull[-2], hull[-1], p) != 2:
+            hull.pop()
+        hull.append(p)
+
+    return hull
+
+def plot_hull(points, hull):
+    plt.figure()
+    plt.scatter([p.x for p in points], [p.y for p in points], color='blue')
+    plt.scatter([p.x for p in hull], [p.y for p in hull], color='red')
+
+    for i in range(len(hull)):
+        plt.plot([hull[i].x, hull[(i + 1) % len(hull)].x], 
+                  [hull[i].y, hull[(i + 1) % len(hull)].y], color='red')
+
+    plt.title('Graham Scan Convex Hull')
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.grid()
+    plt.show()
+points = [ Point(0, 0), Point(1, 1), Point(2, 2), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-1, 1), Point(3, 1)]
+hull = graham_scan(points)
+plot_hull(points, hull)
